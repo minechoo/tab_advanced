@@ -28,13 +28,15 @@ const main = document.querySelector('main');
 const btns = main.querySelectorAll('li');
 const boxs = main.querySelectorAll('article');
 const convertedSpeed = convertSpeed(boxs[0]);
+let preventEL = false;
 
 btns.forEach((btn, idx) => {
 	btn.addEventListener('click', (e) => {
 		e.preventDefault();
 
 		const isOn = e.currentTarget.classList.contains('on');
-		if (isOn) return;
+		if (isOn || preventEL) return;
+		preventEL = true;
 
 		activation(btns, idx);
 		activation(boxs, idx);
@@ -54,6 +56,11 @@ function matchHT(index) {
 		prop: 'height',
 		value: activeHT,
 		duration: convertedSpeed,
+		callback: () => {
+			//모든 모션이 끝난이후에 preventEL값을 다시 flase 로 바꿔서
+			//이벤트 발생시 함수 호출되도록 변경
+			preventEL = false;
+		},
 	});
 }
 
